@@ -1,0 +1,12 @@
+./idea/*
+./idea
+./idea/*.*
+*.pyc
+./build/
+build/
+./build/*
+./build/*.*
+./dist/
+dist/
+./dist/*
+./dist/*.*
