@@ -108,3 +108,9 @@ class DALResponse(object):
         for record in self._data:
             if not visitor.visit_with_class(record, self._translationMap):
                 break
+                
+    def list_response(self):
+        """
+        :return:
+        """
+        return self._data
