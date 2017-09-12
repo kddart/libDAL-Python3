@@ -50,3 +50,13 @@ class DALResponseVisitor(object):
         dynamicClass = self._builder.build_entity(responseRecord.key_name, rowdata)
 
         return self._visitorFunction(dynamicClass)
+
+    def get_visit_entity(self, responseRecord):
+        """
+        :param responseRecord: Response record function passed in with which the visitor function visits
+        :return:
+        """
+        rowdata = responseRecord.rowdata
+        dynamicClass = self._builder.build_entity(responseRecord.key_name, rowdata)
+
+        return dynamicClass

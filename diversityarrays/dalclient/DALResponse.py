@@ -114,3 +114,9 @@ class DALResponse(object):
         :return:
         """
         return self._data
+
+    def list_entities(self):
+        """
+        :return:
+        """
+        return [self._default_visitor.get_visit_entity(data) for data in self._data]
