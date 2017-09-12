@@ -326,14 +326,14 @@ class DefaultDALClient(IDALClient):
         """
         return self.perform_query_internal(command, False)
 
-    def perform_query_internal(self, command, postTrue, postParams=None, fileContentTypeTuple=None):
+    def perform_query_internal(self, command, postTrue, postParams=None, fileContentTypeTuple=None, dont_include=None):
         """
         :param command: Command for DAL
         :return: Returns DALResponse for the command
         """
         cmd = self._loginURL + "/" + command
 
-        if not self._responseType.isXML():
+        if not self._responseType.isXML() and not dont_include:
             cmd += "?ctype=" + self._responseType.value
 
         prep = HttpPostBuilder(self._dalHttpFactory, cmd) \
