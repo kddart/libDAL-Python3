@@ -114,8 +114,11 @@ class DalUtil:
             returnedIds = returnedIds + data[IDALClient.TAG_RETURN_ID]
 
         if IDALClient.TAG_RECORD_META in list(data.keys()):
-            recordMeta = data[IDALClient.TAG_RECORD_META][0]
-            recordData = data[recordMeta[IDALClient.TAG_NAME]]
+            if len(data[IDALClient.TAG_RECORD_META]) >= 1:
+                recordMeta = data[IDALClient.TAG_RECORD_META][0]
+                recordData = data[recordMeta[IDALClient.TAG_NAME]]
+            else:
+                recordData = []
 
             #Adds in virtual column data
             if IDALClient.TAG_VCOL in list(data.keys()):
