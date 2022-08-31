@@ -25,9 +25,12 @@ from .SessionExpire import SessionExpire
 from .HttpPostBuilder import HttpPostBuilder
 from .DalHttpFactory import DalHttpFactory
 import os
+import sys
 import urllib.request, urllib.error, urllib.parse
 from .DalUtil import DalUtil
 import http.cookiejar
+import logging
+logger = logging.getLogger(__name__)
 
 __author__ = "alexs"
 __copyright__ = "Copyright (C) 2015,2016,2017  Diversity Arrays Technology"
@@ -36,13 +39,19 @@ __license__ = "GPL 3.0"
 
 class DefaultDALClient(IDALClient):
 
-    def __init__(self, debug=2):
+    def __init__(self, debug=0):
+        super().__init__()
 
-        # Super constructor for Attributes/Tags to be populated
-        super(IDALClient, self).__init__()
+        # For backwards compatibility: if debug > 0, print any debug log
+        # messages emitted by diversityarrays.dalclient loggers to stdout
+        if debug > 0:
+            parent_package_name = __name__.rsplit(".", maxsplit=1)[0]
+            parent_logger = logging.getLogger(parent_package_name)
+            # Avoid doubling up handlers if multiple instances are constructed:
+            if not parent_logger.handlers:
+                parent_logger.addHandler(logging.StreamHandler(sys.stdout))
+                parent_logger.setLevel(logging.DEBUG)
 
-        # Number indicates verbosity of debug
-        self._debug = debug
         self._dalUtil = DalUtil()
 
         # For cookie management between commands
@@ -183,15 +192,16 @@ class DefaultDALClient(IDALClient):
             signature = self._dalUtil.create_sha1_hash(hashkey=signature, hashable=rand)
             signature = self._dalUtil.create_sha1_hash(hashkey=signature, hashable=url)
         else:
+            signature = None
             cmd = "oauth2google"
             url = self._loginURL + "/" + cmd
 
         httpPostBuilder = HttpPostBuilder(self._dalHttpFactory, url)
 
-        if self._debug > 0:
-            print("Attempting login to: " + self._loginURL)
-            print("Using cmd: " + url)
-            print("Hash: " + signature + "\n")
+        logger.debug("Attempting login to %s", self._loginURL)
+        logger.debug("Using cmd: %s", url)
+        if signature is not None:
+            logger.debug("Hash: %s\n", signature)
 
         request = httpPostBuilder.set_respone_type(self._responseType)
         request = request.add_parameter("rand_num", rand) \
@@ -252,8 +262,7 @@ class DefaultDALClient(IDALClient):
         self._groupName = groupName
         self._groupId = int(groupId)
 
-        if self._debug > 0:
-            print("Switched to group: " + groupName + " successfully.")
+        logger.debug("Switched to group: %s successfully", groupName)
 
     def logout(self):
         """
@@ -261,8 +270,7 @@ class DefaultDALClient(IDALClient):
         """
         response = self.perform_query("/logout")
 
-        if self._debug > 0:
-            print("Logged out")
+        logger.debug("Logged out")
 
         self._loggedIn = False
         self._userId = None
@@ -362,8 +370,7 @@ class DefaultDALClient(IDALClient):
             # Building for a GET
             req = prep.build()
 
-        if self._debug > 0:
-            print("Performing Query: " + cmd)
+        logger.debug("Performing Query: %s", cmd)
 
         # Actually performing the Http command
         content = ""
