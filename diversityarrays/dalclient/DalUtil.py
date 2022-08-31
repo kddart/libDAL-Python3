@@ -22,6 +22,7 @@ import uuid
 import hashlib
 import hmac
 import json
+import logging
 from .DALResponseFormatException import DALResponseFormatException
 import _elementtree as cElementTree
 from .DALXmlConfig import DALXmlConfig
@@ -34,6 +35,8 @@ __author__ = "alexs"
 __copyright__ = "Copyright (C) 2017  Diversity Arrays Technology"
 __license__ = "GPL 3.0"
 __email__ = ""
+
+logger = logging.getLogger(__name__)
 
 
 class DalUtil:
@@ -163,7 +166,11 @@ class DalUtil:
         if not type(response) is type(""):
             response = str(response.decode("utf-8"))
 
-        data = json.loads(response)
+        try:
+            data = json.loads(response)
+        except json.JSONDecodeError:
+            logger.debug("Response was not valid JSON: \n%s", response)
+            raise
 
         if data is None:
             raise DALResponseFormatException("Input content for parsing from json was None")
