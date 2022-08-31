@@ -40,9 +40,7 @@ __license__ = "GPL 3.0"
 class DefaultDALClient(IDALClient):
 
     def __init__(self, debug=0):
-
-        # Super constructor for Attributes/Tags to be populated
-        super(IDALClient, self).__init__()
+        super().__init__()
 
         # For backwards compatibility: if debug > 0, print any debug log
         # messages emitted by diversityarrays.dalclient loggers to stdout

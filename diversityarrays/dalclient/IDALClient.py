@@ -26,7 +26,7 @@ __license__ = "GPL 3.0"
 __email__ = ""
 
 
-class IDALClient(object):
+class IDALClient:
 
     # Instance Tag fields
     TAG_USER = "User"
@@ -70,79 +70,6 @@ class IDALClient(object):
 
     # Exception file where naming exceptions are kept
     TAG_EXCEPTION_FILE = "TagToClassName.properties"
-
-    def __init__(self):
-
-        global TAG_USER, \
-        TAG_WRITE_TOKEN, \
-        TAG_INFO, \
-        TAG_STAT_INFO, \
-        TAG_ERROR, \
-        TAG_RECORD_META, \
-        TAG_NAME, \
-        TAG_OPERATION, \
-        TAG_PAGINATION, \
-        TAG_RETURN_ID, \
-        TAG_RETURN_ID_FILE, \
-        ATTR_VALUE, \
-        ATTR_USER_ID, \
-        ATTR_USER_NAME, \
-        ATTR_VERSION, \
-        ATTR_GROUP_NAME, \
-        ATTR_GROUP_ID, \
-        ATTR_GADMIN, \
-        ATTR_GROUP_SELECTION_STATUS, \
-        ATTR_LOGIN_STATUS, \
-        ATTR_MESSAGE, \
-        ATTR_REST, \
-        ATTR_NUM_OF_RECORDS, \
-        ATTR_NUM_OF_PAGES, \
-        ATTR_NUM_PER_PAGE, \
-        ATTR_PAGE, \
-        ATTR_PARA_NAME, \
-        ATTR_XML, \
-        TAG_NAME_TO_CLASS_NAME, \
-        TAG_EXCEPTION_FILE, \
-        TAG_OUTPUT_FILE
-
-        # Look for custom Exceptions file
-        files = [f for f in os.getcwd().listdir('.') if os.path.isfile(f)]
-        f = None
-        if TAG_EXCEPTION_FILE in files:
-            try:
-                f = open(TAG_EXCEPTION_FILE, "r")
-                for line in f.readlines():
-                    if len(line) > 0 and "#" == line[0] and ":" in line:
-                        line = line.rstrip()
-                        name, classname = line.split(":")
-                        TAG_NAME_TO_CLASS_NAME[name] = classname
-            except:
-                # Ignore this..
-                pass
-            finally:
-                if not f is None:
-                    f.close()
-
-
-    def create_tag_translation_file(self):
-        """
-        Creates a properties file in the current directory where DAL tag namd to class name translations can be kept.
-        For instance if you wanted Trial objects created to be called Experiment then you would add to the file a line which has:
-        Trial:Experiment
-        :return:
-        """
-        f = None
-        try:
-            f = open(TAG_EXCEPTION_FILE, "a+")
-            f.write("# This is the DALClient Tag name to class name translation file.\n"
-                    "# Enter mappings in this file in the format: Tag:ClassName")
-            for name,className in TAG_NAME_TO_CLASS_NAME:
-                f.write(name + ":" + className + "\n")
-        except:
-            pass
-        finally:
-            if not f is None:
-                f.close()
 
     @property
     def reponse_type(self):
