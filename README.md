@@ -144,7 +144,7 @@ outputFiles = response.output_files
 content = client.download_file(outputFiles[0]["csv"], localFile="./TrialData.csv")
 ~~~
 
-See Direcotory: 
+See Directory: 
 **'Examples'**
 for some more simple examples.
 
